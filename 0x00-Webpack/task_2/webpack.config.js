@@ -22,8 +22,4 @@ module.exports = {
   optimization: {
     minimize: true,
   },
-  performance: {
-    maxAssetSize: 512 * 1024, // 512 KiB, increase this limit as needed
-    maxEntrypointSize: 512 * 1024, // 512 KiB, increase this limit as needed
-  },
 };
