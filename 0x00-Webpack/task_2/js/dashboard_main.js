@@ -18,5 +18,5 @@ $(document).ready(function() {
   $('body').append('<p>Copyright - Holberton School</p>');
 
   // Bind debounce function from Lodash to button click
-  $('button').on('click', _.debounce(updateCounter, 300));
+  $('button').on('click', _.debounce(updateCounter, 500));
 });
