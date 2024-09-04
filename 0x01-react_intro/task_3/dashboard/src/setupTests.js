@@ -1,8 +1,8 @@
 // task_3/dashboard/src/setupTests.js
 
 import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
-// Configure Enzyme with the React 16 adapter
+// Configure Enzyme with the React 17 adapter
 configure({ adapter: new Adapter() });
 
