@@ -1,31 +1,49 @@
-import React from 'react'
-import {render, screen} from '@testing-library/react'
-import CourseList from './CourseList'
+import React from "react";
+import CourseList from "./CourseList";
+import CourseListRow from "./CourseListRow";
+import { shallow } from "enzyme";
+import { StyleSheetTestUtils } from "aphrodite";
 
-import { StyleSheetTestUtils } from 'aphrodite'
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-const coursesList = [{id: 1, name: 'ES6', credit: 60},
-{id: 2, name: 'Webpack', credit: 20},
-{id: 3, name: 'React', credit: 40}]
+const listCourses = [
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
-test('CourseList renders without crashing', () => {
-    StyleSheetTestUtils.suppressStyleInjection()
-    render(<CourseList listCourses={coursesList}/>)
-    expect(Number(screen.getAllByRole('row').length) > 1).toBeTruthy()
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection()
-})
+describe("CourseList component tests", () => {
+  it("should render without crashing", () => {
+    const wrapper = shallow(<CourseList />);
 
-test('CourseList renders 5 rows with list provided', () => {
-    StyleSheetTestUtils.suppressStyleInjection()
-    render(<CourseList listCourses={coursesList}/>)
-    expect(Number(screen.getAllByRole('row').length)).toBe(5)
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection()
-})
+    expect(wrapper.exists()).toBe(true);
+  });
 
-test('CourseList renders correctly with list not provided', () => {
-    StyleSheetTestUtils.suppressStyleInjection()
-    render(<CourseList listCourses={[]}/>)
-    expect(Number(screen.getAllByRole('row').length)).toBe(1)
-    expect(screen.getByText('No courses available yet')).toBeInTheDocument()
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection()
-})
+  it("renders 5 different rows", () => {
+    const wrapper = shallow(<CourseList listCourses={listCourses} />);
+
+    expect(wrapper.find("thead").children()).toHaveLength(2);
+    wrapper.find("thead").forEach((node) => {
+      expect(node.equals(<CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true} />));
+    });
+
+    expect(wrapper.find("tbody").children()).toHaveLength(3);
+    expect(wrapper.find("tbody").childAt(0).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>ES6</td><td>60</td></tr>');
+    expect(wrapper.find("tbody").childAt(1).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>Webpack</td><td>20</td></tr>');
+    expect(wrapper.find("tbody").childAt(2).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>React</td><td>40</td></tr>');
+  });
+
+  it("renders correctely when passed a list of courses", () => {
+    const wrapper = shallow(<CourseList listCourses={listCourses} />);
+
+    expect(wrapper.find("tbody").children()).toHaveLength(3);
+    expect(wrapper.find("tbody").childAt(0).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>ES6</td><td>60</td></tr>');
+    expect(wrapper.find("tbody").childAt(1).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>Webpack</td><td>20</td></tr>');
+    expect(wrapper.find("tbody").childAt(2).html()).toEqual('<tr style="background-color:#f5f5f5ab"><td>React</td><td>40</td></tr>');
+  });
+});

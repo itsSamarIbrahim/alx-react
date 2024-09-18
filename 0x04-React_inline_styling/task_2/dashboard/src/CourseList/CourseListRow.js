@@ -1,51 +1,60 @@
-import React from 'react'
-import { StyleSheet, css } from 'aphrodite'
+import React from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, css } from "aphrodite";
 
-
-const CourseListRow = ({isHeader=false, textFirstCell, textSecondCell=null}) => {
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+  const headerStyle = { backgroundColor: "#deb5b545" };
+  const rowStyle = { backgroundColor: "#f5f5f5ab" };
+  const selectedStyle = isHeader ? headerStyle : rowStyle;
 
   return (
-    <tr className={isHeader ? css(styles.headerStyle) : css(styles.trStyle)}>
-        {
-            isHeader ? (
-                <>
-                {
-                    textSecondCell ? (
-                        <>
-                            <th className={css(styles.thStyle)}>{textFirstCell}</th>
-                            <th className={css(styles.thStyle)}>{textSecondCell}</th>
-                        </>
-                        ) : (
-                            <th colSpan="2" className={{...css(styles.thStyle), ...css(styles.withColSpan2)}}>{textFirstCell}</th>
-                    )
-                }
-                </>
-            ) : (
-                <>
-                <td>{textFirstCell}</td>
-                <td>{textSecondCell}</td>
-                </>
-            )
-        }
+    <tr style={selectedStyle}>
+      {isHeader ? (
+        textSecondCell === null ? (
+          <th colSpan="2" className={css(listRowStyles.thcenter)}>{textFirstCell}</th>
+        ) : (
+          <>
+            <th className={css(listRowStyles.th)}>{textFirstCell}</th>
+            <th className={css(listRowStyles.th)}>{textSecondCell}</th>
+          </>
+        )
+      ) : (
+        <>
+          <td className={css(listRowStyles.td)}>{textFirstCell}</td>
+          <td className={css(listRowStyles.td)}>{textSecondCell}</td>
+        </>
+      )}
     </tr>
-  )
-}
+  );
+};
 
-export default CourseListRow
+const listRowStyles = StyleSheet.create({
+  thcenter: {
+    borderBottom: '1px solid gray',
+    margin: 0,
+    padding: 0,
+    textAlign: 'center'
+  },
+  th: {
+    borderBottom: '1px solid gray',
+    margin: 0,
+    padding: 0,
+    textAlign: 'left'
+  },
+  td: {
+    paddingLeft: 3
+  }
+});
 
-// aphrodite styles
-const styles = StyleSheet.create({
-    headerStyle: {
-        background: '#deb5b545',
-    },
-    trStyle: {
-        background: '#f5f5f5'
-    },
-    thStyle: {
-        borderBottom: '2px solid #b7b2b2',
-        textAlign: 'left'
-    },
-    withColSpan2: {
-        textAlign: 'center'
-    }
-})
+CourseListRow.defaultProps = {
+  isHeader: false,
+  textSecondCell: null,
+};
+
+CourseListRow.propTypes = {
+  isHeader: PropTypes.bool,
+  textFirstCell: PropTypes.string,
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+export default CourseListRow;

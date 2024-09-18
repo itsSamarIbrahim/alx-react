@@ -1,21 +1,23 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import Login from './Login'
+import { shallow } from "enzyme";
+import React from "react";
+import Login from "./Login";
+import { StyleSheetTestUtils } from "aphrodite";
 
-import { StyleSheetTestUtils } from 'aphrodite'
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-test('Login renders without crushing', () => {
-    StyleSheetTestUtils.suppressStyleInjection()
-    render(<Login/>)
-    expect(screen.getByText('Login to access the full dashboard')).toBeInTheDocument()
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection()
-})
-
-test('Login renders 2 input and 2 label tags', () => {
-    StyleSheetTestUtils.suppressStyleInjection()
-    render(<Login/>)
-    expect(screen.getAllByRole('textbox').length).toBe(1)
-    expect(screen.getAllByRole('textbox', {type: 'password'}).length).toBe(1)
-    expect(screen.getAllByLabelText(/.+/).length).toBe(2) // match all tet labels
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection()
-})
+describe("Header", () => {
+  it("should render without crashing", () => {
+    const wrapper = shallow(<Login />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("should have 2 input tags and 2 label tags", () => {
+    const wrapper = shallow(<Login />);
+    expect(wrapper.find("label")).toHaveLength(2);
+    expect(wrapper.find("input")).toHaveLength(2);
+  });
+});

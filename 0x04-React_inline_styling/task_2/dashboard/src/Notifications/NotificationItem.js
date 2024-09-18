@@ -1,29 +1,55 @@
-import React, { memo } from 'react'
-import { StyleSheet, css } from 'aphrodite'
-
-// const NotificationItem = (type, html=null, value) => {
-const NotificationItem = memo(({value, html=null, type, read}) => {
-  return (
-    <>
-    {
-        html ? (
-        <li data={type} dangerouslySetInnerHTML={{ __html: html()}} onClick={read} className={css(styles.ulLiUrgent)}></li>
-        ) : ( 
-        <li data={type} onClick={read} className={type === 'urgent' ? css(styles.ulLiUrgent) :  css(styles.ulLiDefault)}>{ value }</li> )
-    }
-    </>
-  )
-})
-
-export default NotificationItem
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from "aphrodite";
 
 
-// define aphrodite styles
-const styles = StyleSheet.create({
-  ulLiDefault: {
-    color: 'blue'
-  },
-  ulLiUrgent: {
-    color: 'red'
+class NotificationItem extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.selected_style = this.props.type === 'default' ?  itemStyles.default : itemStyles.urgent;
   }
-})
+
+  render() {
+    return (
+      this.props.value ? 
+      <li
+      data-notification-type={this.props.type}
+      onClick={() => this.props.markAsRead(this.props.id)}
+      className={css(this.selected_style)}
+      >{this.props.value}</li> 
+      :
+      <li
+      data-notification-type={this.props.type}
+      dangerouslySetInnerHTML={this.props.html}
+      onClick={() => {console.log('empty func');}}
+      className={css(this.selected_style)}
+      ></li>
+    );
+  }
+};
+
+const itemStyles = StyleSheet.create({
+  urgent: {
+		color: 'red'
+	},
+
+	default: {
+		color: 'blue'
+	}
+});
+
+NotificationItem.defaultProps = {
+  type: 'default',
+  markAsRead: () => {console.log('empty func');},
+	id: 0
+};
+
+NotificationItem.propTypes = {
+  html: PropTypes.shape({__html: PropTypes.string}),
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  markAsRead: PropTypes.func,
+  id: PropTypes.number
+};
+
+export default NotificationItem;

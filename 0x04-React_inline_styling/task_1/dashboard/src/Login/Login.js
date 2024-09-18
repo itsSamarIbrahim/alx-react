@@ -1,34 +1,33 @@
-import React from 'react'
-// import './Login.css'
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
 
-import { StyleSheet, css } from 'aphrodite'
-
-import WithLogging from '../HOC/WithLogging'
-
-const Login = ({login}) => {
+function Login() {
   return (
-    <>
+    <React.Fragment>
+      <div className={css(styles["App-body"])}>
         <p>Login to access the full dashboard</p>
         <form>
-          <label htmlFor="email" className={css(styles.labelS)}>email:</label>
-          <input id="email" type="text" className={css(styles.labelS)}/>
-          <label htmlFor="password" className={css(styles.labelS)}>password:</label>
-          <input id="password" type="password" className={css(styles.labelS)}/>
-          <button type='button' onClick={login}>OK</button>
+          <label htmlFor="email">Email:</label>
+          <input className={css(styles.input)} type="email" name="email"></input>
+          <label htmlFor="password">Password:</label>
+          <input className={css(styles.input)} type="password" name="password"></input>
+          <button>OK</button>
         </form>
-      </>
-  )
+      </div>
+    </React.Fragment>
+  );
 }
 
-export default WithLogging(Login)
-
-// define Aphrodite styles
 const styles = StyleSheet.create({
-  labelS: {
-    textTransform: 'capitalize',
-    paddingRight: '1rem'
+  "App-body": {
+    fontSize: "1rem",
+    padding: "2em",
+    height: "45%",
   },
-  inputS: {
-    marginRight: '1rem'
-  }
-})
+
+  input: {
+    margin: "10px",
+  },
+});
+
+export default Login;
