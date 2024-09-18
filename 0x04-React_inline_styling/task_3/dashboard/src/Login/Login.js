@@ -1,55 +1,56 @@
-import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import React from 'react'
+// import './Login.css'
 
-function Login() {
+import { StyleSheet, css } from 'aphrodite'
+
+import WithLogging from '../HOC/WithLogging'
+
+const Login = ({login}) => {
   return (
-    <main role='main' className={css(styles.login)}>
-      <p>Login to access the full dashboard</p>
-      <label htmlFor='email'>Email:</label>
-      <input className={css(styles.inp)} type='email' name='email' id='email' />
-      <label htmlFor='password'>Password:</label>
-      <input
-        className={css(styles.inp)}
-        type='password'
-        name='password'
-        id='password'
-      />
-      <button className={css(styles.btn)} type='button'>
-        OK
-      </button>
-    </main>
-  );
+    <>
+        <p>Login to access the full dashboard</p>
+        <form className={css(styles.form)}>
+          <div className={css(styles.labelInputBlock)}>
+          <label htmlFor="email" className={css(styles.labelS)}>email:</label>
+          <input id="email" type="text" className={css(styles.inputS)}/>
+          </div>
+          <div className={css(styles.labelInputBlock)}>
+          <label htmlFor="password" className={css(styles.labelS)}>password:</label>
+          <input id="password" type="password" className={css(styles.inputS)}/>
+          </div>
+          <button className={css(styles.buttonS)} type='button' onClick={login}>OK</button>
+        </form>
+      </>
+  )
 }
 
-const screenSize = {
-  small: '@media screen and (max-width: 900px)',
-};
+export default WithLogging(Login)
 
+// define Aphrodite styles
 const styles = StyleSheet.create({
-  login: {
-    padding: '16px 24px',
-    [screenSize.small]: {
-      width: '90%',
-      padding: 0,
-    },
+  form: {
+    '@media (min-width: 600px)': {
+      display: 'flex',
+      flexDirection: 'row'
+    }
   },
-  inp: {
-    margin: '4px',
-    [screenSize.small]: {
-      display: 'block',
-      border: 'none',
-      margin: 0,
-    },
+  labelS: {
+    textTransform: 'capitalize',
+    paddingRight: '1rem'
   },
-  btn: {
-    margin: '4px',
-    cursor: 'pointer',
-    [screenSize.small]: {
-      width: '32px',
-      display: 'block',
-      margin: 0,
-    },
+  inputS: {
+    marginRight: '1rem',
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    backgroundColor: 'none'
   },
-});
-
-export default Login;
+  labelInputBlock: {
+      paddingBlock: '.3rem'
+  },
+  buttonS: {
+    display: 'block',
+    background: 'none',
+    border: '2px solid Yellow'
+  }
+})

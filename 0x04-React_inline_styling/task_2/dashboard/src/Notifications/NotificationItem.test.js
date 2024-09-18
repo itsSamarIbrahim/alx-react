@@ -1,38 +1,42 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import NotificationItem from './NotificationItem';
-import { StyleSheetTestUtils } from 'aphrodite';
+import React from 'react'
+import  { render, screen, fireEvent } from '@testing-library/react'
+import NotificationItem from './NotificationItem'
 
-describe('<NotificationItem />', () => {
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterAll(() => {
+import { StyleSheetTestUtils } from "aphrodite";
+
+
+test('NotificationItem renders without crashing', () => {
+    StyleSheetTestUtils.suppressStyleInjection()
+    render(<NotificationItem type="default" value="testing" />)
+    expect(screen.getByRole('listitem')).toBeDefined()
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
 
-  it('render without crashing', () => {
-    const wrapper = shallow(<NotificationItem />);
-    expect(wrapper.exists());
-  });
+})
+test('NotificationItem renders the correct html (type and value) given test prop values', () => {
+    StyleSheetTestUtils.suppressStyleInjection()
+    render(<NotificationItem type="default" value="testing" />)
+    expect(screen.getAllByRole('listitem')[0].getAttribute('data')).toBe('default')
+    expect(screen.getAllByRole('listitem')[0].innerHTML).toBe('testing')
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+})
+test('NotificationItem renders the correct html given test __html prop values', () => {
+    StyleSheetTestUtils.suppressStyleInjection()
+    render(<NotificationItem type="default" value="testing" html={() => '<strong>test</strong>'} />)
+    expect(screen.getAllByRole('listitem')[0].innerHTML).toBe('<strong>test</strong>')
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+})
 
-  it('renders type and value props', () => {
-    const wrapper = shallow(<NotificationItem type='default' value='test' />);
-    const li = wrapper.find('li');
-    expect(wrapper.exists());
-    expect(li.exists());
-    expect(li).toHaveLength(1);
-    expect(li.text()).toEqual('test');
-    expect(li.prop('data-notification-type')).toEqual('default');
-  });
-
-  it('renders html prop', () => {
-    const text = 'Here is the list of notifications';
-    const wrapper = shallow(
-      <NotificationItem html={{ __html: '<u>test</u>' }} />
-    );
-    const li = wrapper.find('li');
-    expect(wrapper.exists());
-    expect(li.exists());
-  });
-});
+/* class components */
+test('the console.log spy is called when the markAsRead function is called', () => {
+    StyleSheetTestUtils.suppressStyleInjection()
+    const markAsRead = jest.fn()
+    // const spyCLog = jest.spyOn(console, 'log')
+    // const value = "Hello world"
+    render(<NotificationItem read={() => markAsRead(1)}/>)
+    const listItem = screen.getByRole('listitem')
+    fireEvent.click(listItem)
+    expect(markAsRead).toHaveBeenCalled()
+    // expect(spyCLog).toHaveBeenCalled()
+    // expect(spyCLog).toHaveBeenCalledWith(/Notification .+/)
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  })

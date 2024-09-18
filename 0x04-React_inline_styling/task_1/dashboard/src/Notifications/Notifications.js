@@ -1,98 +1,92 @@
-import React, { Component, Fragment } from 'react';
-import close_icon from '../assets/close-icon.png';
-import NotificationItem from './NotificationItem';
-import PropTypes from 'prop-types';
-import NotificationItemShape from './NotificationItemShape';
-import './Notifications.css';
-import { StyleSheet, css } from 'aphrodite';
+import React, { Component } from 'react'
+// import './Notifications.css'
 
+import { StyleSheet, css } from 'aphrodite'
+
+import NotificationItem from './NotificationItem'
+
+// const Notifications = ({displayDrawer=true, listNotifications=[]}) => {
 class Notifications extends Component {
-  constructor(props) {
-    super(props);
-    this.markAsRead = this.markAsRead.bind(this);
+
+  log = () => console.log('Close button has been clicked')
+  style = {
+    position: "absolute",
+    right: ".25rem",
+    top: ".25rem",
+    background: "transparent",
+    border: "none",
   }
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`);
+
+  markAsRead = (id) => {
+    console.log(`Notification $${id} has been marked as read`)
   }
+
+  componentDidUpdate() {
+    console.log('Notifications rerendering ...')
+  }
+  // the method is called by default every time the parent component re-renders (provide the re-render only on change optimization)
   shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.listNotifications.length > this.props.listNotifications.length
-    );
+    // re-render only if notificationsList grows... (nextProps is the props the component is about to render with)
+    return nextProps.listNotifications.length > this.props.listNotifications.length
   }
 
   render() {
-    const { displayDrawer, listNotifications } = this.props;
+    const displayDrawer = this.props.displayDrawer
+    const listNotifications = this.props.listNotifications
+    // console.log(displayDrawer)
+    // console.log(listNotifications)
     return (
-      <Fragment>
-        <div className={css(styles.menuItem)}>
-          <p>Your notifications</p>
+      <>
+    <div>
+        <p className={css(styles.menuItemP)}>Your notifications</p>
+      </div>
+      { displayDrawer && 
+        <div className={css(styles.Notifications)} style={{position: "relative"}}>
+          { listNotifications.length > 0 ? (
+            <>
+              <p>Here is the list of notifications</p>
+              <ul>
+                {
+                  listNotifications.map((item) => <NotificationItem key={item.id} type={item.type} value={item.value}
+                    html={item.html} read={() => this.markAsRead(item.id)} styles={styles}/>)
+                }
+              </ul>
+              <button aria-label='Close' onClick={this.log} style={this.style}>x</button>
+            </> ) : (<p> No new notifications for now</p>)
+          }
         </div>
-        {displayDrawer && (
-          <div className={css(styles.notifications)}>
-            <p>Here is the list of notifications</p>
-            <ul>
-              {listNotifications.length === 0 && (
-                <NotificationItem value='No new notification for now' />
-              )}
-              {listNotifications.map((notification) => (
-                <NotificationItem
-                  key={notification.id}
-                  type={notification.type}
-                  value={notification.value}
-                  html={notification.html}
-                  markAsRead={this.markAsRead}
-                />
-              ))}
-            </ul>
-            <button
-              type='button'
-              aria-label='Close'
-              onClick={() => console.log('Close button has been clicked')}
-              style={{
-                display: 'inline-block',
-                position: 'absolute',
-                top: '56px',
-                right: '16px',
-                background: 0,
-                border: 0,
-                outline: 'none',
-                cursor: 'pointer',
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={close_icon}
-                alt=''
-                style={{ width: '8px', height: '8px' }}
-              />
-            </button>
-          </div>
-        )}
-      </Fragment>
-    );
+      }
+      </>
+    )
   }
 }
 
 Notifications.defaultProps = {
-  displayDrawer: false,
-  listNotifications: [],
-};
+  displayDrawer: true,
+  listNotifications: []
 
-Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(NotificationItemShape),
-};
+}
 
+export default Notifications
+
+
+// define aphrodite styles
 const styles = StyleSheet.create({
-  notifications: {
-    border: 'thin dotted #e0344a',
-    padding: '4px 16px',
-    float: 'right',
-  },
-  menuItem: {
-    textAlign: 'right',
-    marginRight: '16px',
-  },
-});
-
-export default Notifications;
+  menuItemP: {
+    textAlign: 'right'
+},
+Notifications: {
+    border: '2px solid #e0354b',
+    padding: '1rem',
+    borderStyle: 'dashed',
+    width: '40%',
+    right: 0,
+    marginLeft: '57%'
+},
+ulLiDefault: {
+    color: 'blue'
+},
+ulLiUrgent: {
+    color: 'red'
+},
+})

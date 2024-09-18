@@ -1,65 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React, { memo } from 'react'
+import { StyleSheet, css } from 'aphrodite'
 
-class NotificationItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    const { type, html, value, markAsRead, id } = this.props;
-    const color = css(type === 'urgent' ? styles.urgent : styles.default);
-    let li;
+// const NotificationItem = (type, html=null, value) => {
+const NotificationItem = memo(({value, html=null, type, read}) => {
+  return (
+    <>
+    {
+        html ? (
+        <li data={type} dangerouslySetInnerHTML={{ __html: html()}} onClick={read} className={css(styles.ulLiUrgent)}></li>
+        ) : ( 
+        <li data={type} onClick={read} className={type === 'urgent' ? css(styles.ulLiUrgent) :  css(styles.ulLiDefault)}>{ value }</li> )
+    }
+    </>
+  )
+})
 
-    value
-      ? (li = (
-          <li
-            className={color}
-            data-notification-type={type}
-            onClick={() => markAsRead(id)}
-          >
-            {value}
-          </li>
-        ))
-      : (li = (
-          <li
-            className={color}
-            data-notification-type={type}
-            dangerouslySetInnerHTML={html}
-            onClick={() => markAsRead(id)}
-          ></li>
-        ));
+export default NotificationItem
 
-    return li;
-  }
-}
 
-NotificationItem.defaultProps = {
-  type: 'default',
-  html: {},
-  value: '',
-  markAsRead: () => {},
-  id: NaN,
-};
-
-NotificationItem.propTypes = {
-  type: PropTypes.string,
-  html: PropTypes.shape({
-    __html: PropTypes.string,
-  }),
-  value: PropTypes.string,
-  markAsRead: PropTypes.func,
-  id: PropTypes.number,
-};
-
+// define aphrodite styles
 const styles = StyleSheet.create({
-  default: {
-    color: 'blue',
+  ulLiDefault: {
+    color: 'blue'
   },
-
-  urgent: {
-    color: 'red',
-  },
-});
-
-export default NotificationItem;
+  ulLiUrgent: {
+    color: 'red'
+  }
+})
